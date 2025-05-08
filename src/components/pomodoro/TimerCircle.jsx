@@ -2,17 +2,12 @@
 import { ReactNode } from "react";
 
 export function TimerCircle({ children, progress }) {
-  // Calculate rotation for progress display
-  const rotation = progress * 3.6; // Convert percentage to degrees (100% = 360 degrees)
+  const rotation = progress * 3.6; 
   
   return (
     <div className="relative w-64 h-64 md:w-72 md:h-72">
-      {/* Background Circle */}
       <div className="absolute inset-0 rounded-full bg-muted dark:bg-slate-800"></div>
-      
-      {/* Progress Circle */}
       <div className="absolute inset-0 overflow-hidden rounded-full">
-        {/* First Half of Progress */}
         {rotation <= 180 ? (
           <div 
             className="absolute top-0 left-0 w-full h-full"
@@ -25,7 +20,6 @@ export function TimerCircle({ children, progress }) {
           ></div>
         ) : (
           <>
-            {/* First Half Complete */}
             <div 
               className="absolute top-0 left-0 w-full h-full"
               style={{
@@ -35,7 +29,6 @@ export function TimerCircle({ children, progress }) {
                 transformOrigin: 'bottom left'
               }}
             ></div>
-            {/* Second Half of Progress */}
             <div 
               className="absolute top-0 left-0 w-full h-full"
               style={{
@@ -49,7 +42,6 @@ export function TimerCircle({ children, progress }) {
         )}
       </div>
       
-      {/* Inner Circle */}
       <div className="absolute inset-[15px] rounded-full bg-card flex items-center justify-center shadow-inner">
         {children}
       </div>

@@ -20,7 +20,6 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/resources" element={<Resources />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

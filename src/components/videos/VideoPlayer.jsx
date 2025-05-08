@@ -16,13 +16,11 @@ export function VideoPlayer({ video }) {
   const [duration, setDuration] = useState(0);
   const videoRef = useRef(null);
   
-  // Parse duration string like "12:34" to seconds
   const parseDuration = (timeStr) => {
     const [minutes, seconds] = timeStr.split(":").map(Number);
     return minutes * 60 + seconds;
   };
   
-  // Format seconds to MM:SS
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
     const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
@@ -49,7 +47,6 @@ export function VideoPlayer({ video }) {
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
       setDuration(videoRef.current.duration);
-      // Set initial position based on progress
       if (video.progress > 0 && video.progress < 100) {
         const targetTime = (video.progress / 100) * parseDuration(video.duration);
         videoRef.current.currentTime = targetTime;
@@ -100,7 +97,7 @@ export function VideoPlayer({ video }) {
       <CardContent className="p-0 aspect-video bg-black relative">
         <video
           ref={videoRef}
-          src={`#`} // In a real app, this would be a real video URL
+          src={`#`}
           poster={video.thumbnail}
           className="w-full h-full object-contain"
           onTimeUpdate={handleTimeUpdate}
@@ -108,7 +105,6 @@ export function VideoPlayer({ video }) {
           onEnded={() => setIsPlaying(false)}
         />
         
-        {/* Video Controls Overlay */}
         <div className="absolute inset-0 flex flex-col justify-end opacity-0 hover:opacity-100 transition-opacity bg-gradient-to-t from-black/80 to-transparent">
           <div className="p-4 space-y-2">
             <input

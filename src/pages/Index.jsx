@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Bell, Moon, Sun, Settings, X, Play, Pause, RotateCcw, Check } from "lucide-react";
 import { NavBar } from "@/components/layout/NavBar";
 
-// PomodoroTimer Component with enhanced UX
 const PomodoroTimer = () => {
   const [activeMode, setActiveMode] = useState("pomodoro");
   const [timeLeft, setTimeLeft] = useState(25 * 60);
@@ -10,8 +9,6 @@ const PomodoroTimer = () => {
   const [completedPomodoros, setCompletedPomodoros] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [toast, setToast] = useState({ visible: false, message: "" });
-  
-  // Default timer settings
   const [timerSettings, setTimerSettings] = useState({
     pomodoro: 25,
     shortBreak: 5,
@@ -21,7 +18,6 @@ const PomodoroTimer = () => {
     longBreakInterval: 4
   });
 
-  // Initialize timer when mode changes
   useEffect(() => {
     let time;
     switch (activeMode) {
@@ -41,7 +37,6 @@ const PomodoroTimer = () => {
     setIsRunning(false);
   }, [activeMode, timerSettings]);
 
-  // Timer functionality
   useEffect(() => {
     let interval = null;
     
@@ -50,13 +45,10 @@ const PomodoroTimer = () => {
         setTimeLeft(timeLeft - 1);
       }, 1000);
     } else if (isRunning && timeLeft === 0) {
-      // Play notification sound or show notification
       new Audio('/notification.mp3').play().catch(() => {
-        // Handle browsers that block autoplay
         console.log("Notification sound blocked");
       });
       
-      // Cycle to next mode
       if (activeMode === "pomodoro") {
         setCompletedPomodoros(prev => prev + 1);
         const shouldTakeLongBreak = completedPomodoros > 0 && 
@@ -84,14 +76,12 @@ const PomodoroTimer = () => {
     return () => clearInterval(interval);
   }, [isRunning, timeLeft, activeMode, completedPomodoros, timerSettings]);
 
-  // Format time to MM:SS
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  // Calculate progress percentage for circular progress indicator
   const calculateProgress = () => {
     let totalTime;
     switch (activeMode) {
@@ -111,7 +101,6 @@ const PomodoroTimer = () => {
     return ((totalTime - timeLeft) / totalTime) * 100;
   };
 
-  // Toast notification system
   const showToast = (message) => {
     setToast({ visible: true, message });
     setTimeout(() => {
@@ -119,14 +108,12 @@ const PomodoroTimer = () => {
     }, 3000);
   };
 
-  // Update timer settings
   const updateSettings = (newSettings) => {
     setTimerSettings(newSettings);
     setIsSettingsOpen(false);
     showToast("Settings updated successfully");
   };
 
-  // Reset current timer
   const resetTimer = () => {
     let time;
     switch (activeMode) {
@@ -148,7 +135,6 @@ const PomodoroTimer = () => {
 
   return (
     <div className="flex flex-col items-center">
-      {/* Mode selector */}
       <div className="bg-gray-100 dark:bg-gray-800 rounded-full p-1 flex mb-8 shadow-md">
         <button
           onClick={() => setActiveMode("pomodoro")}
@@ -164,7 +150,7 @@ const PomodoroTimer = () => {
           onClick={() => setActiveMode("shortBreak")}
           className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
             activeMode === "shortBreak"
-              ? "bg-white dark:bg-gray-700 text-green-600 dark:text-green-400 shadow-sm"
+              ? "bg-white dark:bg-gray-700 text-blue-600 dark:text-green-400 shadow-sm"
               : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
           }`}
         >
@@ -174,7 +160,7 @@ const PomodoroTimer = () => {
           onClick={() => setActiveMode("longBreak")}
           className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
             activeMode === "longBreak"
-              ? "bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-400 shadow-sm"
+              ? "bg-white dark:bg-gray-700 text-blue-600 dark:text-purple-400 shadow-sm"
               : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
           }`}
         >
@@ -182,9 +168,7 @@ const PomodoroTimer = () => {
         </button>
       </div>
 
-      {/* Timer display */}
       <div className="relative w-64 h-64 flex items-center justify-center mb-8">
-        {/* Circular progress */}
         <svg className="absolute w-full h-full -rotate-90" viewBox="0 0 100 100">
           <circle
             className="text-gray-200 dark:text-gray-700 stroke-current"
@@ -213,7 +197,6 @@ const PomodoroTimer = () => {
           />
         </svg>
         
-        {/* Time display */}
         <div className="text-center z-10">
           <div className="text-5xl font-bold">{formatTime(timeLeft)}</div>
           <div className="mt-2 text-sm font-medium uppercase text-gray-500 dark:text-gray-400">
@@ -222,7 +205,6 @@ const PomodoroTimer = () => {
         </div>
       </div>
 
-      {/* Timer controls */}
       <div className="flex space-x-4 mb-8">
         <button
           onClick={() => setIsRunning(!isRunning)}
@@ -248,7 +230,6 @@ const PomodoroTimer = () => {
         </button>
       </div>
 
-      {/* Settings modal */}
       {isSettingsOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <SettingsModal 
@@ -259,7 +240,6 @@ const PomodoroTimer = () => {
         </div>
       )}
 
-      {/* Toast notification */}
       {toast.visible && (
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-md shadow-lg max-w-xs z-50 flex items-center justify-between">
           <span>{toast.message}</span>
@@ -272,7 +252,6 @@ const PomodoroTimer = () => {
   );
 };
 
-// Settings Modal Component
 const SettingsModal = ({ settings, onClose, onSave }) => {
   const [tempSettings, setTempSettings] = useState({ ...settings });
 
@@ -401,11 +380,9 @@ const SettingsModal = ({ settings, onClose, onSave }) => {
   );
 };
 
-// Main Index Component
 const Index = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   
-  // Check for user preference or saved setting
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;

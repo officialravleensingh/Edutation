@@ -24,20 +24,18 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 
-// Professional timer circle component
 const TimerCircle = ({ progress, currentMode, children }) => {
-  // Define color schemes for different modes
   const colorScheme = {
     pomodoro: {
-      stroke: "#ef4444", // Red for focus
+      stroke: "#ef4444", 
       shadow: "0 0 15px rgba(239, 68, 68, 0.4)"
     },
     shortBreak: {
-      stroke: "#10b981", // Green for short break
+      stroke: "#10b981", 
       shadow: "0 0 15px rgba(16, 185, 129, 0.4)"
     },
     longBreak: {
-      stroke: "#3b82f6", // Blue for long break
+      stroke: "#3b82f6", 
       shadow: "0 0 15px rgba(59, 130, 246, 0.4)"
     }
   };
@@ -45,7 +43,7 @@ const TimerCircle = ({ progress, currentMode, children }) => {
   return (
     <div className="relative h-64 w-64 flex items-center justify-center">
       <svg className="absolute h-full w-full" viewBox="0 0 100 100">
-        {/* Background circle */}
+
         <circle
           cx="50"
           cy="50"
@@ -54,7 +52,6 @@ const TimerCircle = ({ progress, currentMode, children }) => {
           stroke="#e5e7eb"
           strokeWidth="4"
         />
-        {/* Progress circle with animation */}
         <circle
           cx="50"
           cy="50"
@@ -93,34 +90,26 @@ export default function PomodoroTimer() {
   const [completedCount, setCompletedCount] = useState(0);
   const [showNotification, setShowNotification] = useState(false);
   
-  // Refs for audio
   const alarmSoundRef = useRef(null);
   const tickSoundRef = useRef(null);
 
-  // Format time as MM:SS
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
     const secs = (seconds % 60).toString().padStart(2, '0');
     return `${mins}:${secs}`;
   };
   
-  // Calculate total time based on current mode
   const totalTime = timerSettings[currentMode] * 60;
   
-  // Calculate progress percentage
   const progress = ((totalTime - timeRemaining) / totalTime) * 100;
 
-  // Create audio elements when component mounts
   useEffect(() => {
-    // Create audio elements
     alarmSoundRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
     tickSoundRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/1517/1517-preview.mp3");
     
-    // Adjust volumes
     alarmSoundRef.current.volume = 0.7;
     tickSoundRef.current.volume = 0.2;
     
-    // Cleanup
     return () => {
       if (alarmSoundRef.current) {
         alarmSoundRef.current.pause();
@@ -133,14 +122,12 @@ export default function PomodoroTimer() {
     };
   }, []);
   
-  // Request notification permission on component mount
   useEffect(() => {
     if ("Notification" in window) {
       Notification.requestPermission();
     }
   }, []);
   
-  // Function to play alarm sound
   const playAlarm = () => {
     if (soundEnabled && alarmSoundRef.current) {
       alarmSoundRef.current.currentTime = 0;
@@ -148,7 +135,6 @@ export default function PomodoroTimer() {
     }
   };
   
-  // Function to play tick sound
   const playTick = () => {
     if (soundEnabled && tickSoundRef.current && timeRemaining <= 3 && timeRemaining > 0) {
       tickSoundRef.current.currentTime = 0;
@@ -156,17 +142,15 @@ export default function PomodoroTimer() {
     }
   };
 
-  // Show browser notification
   const showBrowserNotification = (title, body) => {
     if ("Notification" in window && Notification.permission === "granted") {
       new Notification(title, {
         body: body,
-        icon: "/favicon.ico" // Replace with your favicon path
+        icon: "/favicon.ico"
       });
     }
   };
   
-  // Timer logic
   useEffect(() => {
     let interval = null;
     
@@ -179,28 +163,23 @@ export default function PomodoroTimer() {
       setIsActive(false);
       playAlarm();
       
-      // Show alert and notification
       setShowAlert(true);
       setShowNotification(true);
       
-      // Update completed count if it was a focus session
       if (currentMode === "pomodoro") {
         setCompletedCount(prev => prev + 1);
       }
       
-      // Show browser notification
       const nextMode = currentMode === "pomodoro" ? "shortBreak" : 
                       (currentMode === "shortBreak" ? "pomodoro" : "pomodoro");
       const notifTitle = `${currentMode === "pomodoro" ? "Focus" : "Break"} session completed!`;
       const notifBody = `Time for ${nextMode === "pomodoro" ? "focus" : "a break"}`;
       showBrowserNotification(notifTitle, notifBody);
       
-      // Auto transition after 5 seconds
       setTimeout(() => {
         setShowAlert(false);
         setShowNotification(false);
         
-        // Auto switch to the next mode
         const nextMode = currentMode === "pomodoro" ? 
           (completedCount % 4 === 3 ? "longBreak" : "shortBreak") : "pomodoro";
         handleModeChange(nextMode);
@@ -212,7 +191,6 @@ export default function PomodoroTimer() {
     };
   }, [isActive, timeRemaining, currentMode, completedCount]);
   
-  // Handle mode change
   const handleModeChange = (mode) => {
     setCurrentMode(mode);
     setTimeRemaining(timerSettings[mode] * 60);
@@ -220,7 +198,6 @@ export default function PomodoroTimer() {
     setShowAlert(false);
   };
   
-  // Handle timer controls
   const toggleTimer = () => setIsActive(!isActive);
   
   const resetTimer = () => {
@@ -229,7 +206,6 @@ export default function PomodoroTimer() {
     setShowAlert(false);
   };
   
-  // Handle settings change
   const updateTimerSettings = (mode, value) => {
     setTimerSettings(prev => ({
       ...prev,
@@ -241,7 +217,6 @@ export default function PomodoroTimer() {
     }
   };
 
-  // Function to get the title based on mode
   const getModeTitle = (mode) => {
     switch(mode) {
       case "pomodoro": return "Focus Time";
@@ -251,7 +226,6 @@ export default function PomodoroTimer() {
     }
   };
   
-  // Set document title with timer
   useEffect(() => {
     document.title = `${formatTime(timeRemaining)} - ${getModeTitle(currentMode)}`;
     return () => {
@@ -261,7 +235,6 @@ export default function PomodoroTimer() {
 
   return (
     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-8 max-w-md mx-auto transition-all duration-300">
-      {/* Session counter */}
       <div className="flex justify-between items-center mb-4">
         <div className="text-sm text-gray-500 dark:text-gray-400">
           Sessions completed: {completedCount}
@@ -277,7 +250,6 @@ export default function PomodoroTimer() {
         </Button>
       </div>
       
-      {/* Mode tabs */}
       <Tabs 
         value={currentMode}
         onValueChange={handleModeChange}
@@ -290,7 +262,6 @@ export default function PomodoroTimer() {
         </TabsList>
       </Tabs>
       
-      {/* Timer display */}
       <div className="flex justify-center mb-8">
         <TimerCircle progress={progress} currentMode={currentMode}>
           <div className="flex flex-col items-center">
@@ -302,7 +273,6 @@ export default function PomodoroTimer() {
         </TimerCircle>
       </div>
       
-      {/* Timer controls */}
       <div className="flex justify-center gap-4 mb-6">
         <Button 
           size="lg" 
@@ -327,7 +297,6 @@ export default function PomodoroTimer() {
         </Button>
       </div>
       
-      {/* Settings button */}
       <div className="flex justify-center">
         <Button 
           variant="ghost" 
@@ -340,7 +309,6 @@ export default function PomodoroTimer() {
         </Button>
       </div>
       
-      {/* Alert notification when timer completes */}
       {showNotification && (
         <Alert className="mt-6 border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 animate-in fade-in slide-in-from-top-5 duration-300">
           <Bell className="h-4 w-4" />
@@ -353,7 +321,6 @@ export default function PomodoroTimer() {
         </Alert>
       )}
       
-      {/* Settings dialog */}
       <Dialog open={showSettings} onOpenChange={setShowSettings}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>

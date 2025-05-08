@@ -128,7 +128,6 @@ export function ResourcesList() {
         ))}
       </div>
       
-      {/* PDF Preview Dialog */}
       <Dialog open={!!selectedResource} onOpenChange={() => setSelectedResource(null)}>
         <DialogContent className="max-w-3xl h-[80vh]">
           <DialogHeader>
@@ -136,7 +135,6 @@ export function ResourcesList() {
           </DialogHeader>
           <div className="flex flex-col h-full">
             <div className="flex-1 min-h-0">
-              {/* In a real app, this would render an actual PDF viewer component */}
               <div className="w-full h-full flex flex-col items-center justify-center bg-muted rounded-md p-8">
                 <p className="text-center mb-4">
                   This is a placeholder for a PDF viewer. In a real application, this would display the actual PDF document.

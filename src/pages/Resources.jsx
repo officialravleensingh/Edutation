@@ -5,8 +5,7 @@ import { ResourcesList } from "@/components/resources/ResourcesList";
 
 const Resources = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  
-  // Check for user preference or saved setting
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
